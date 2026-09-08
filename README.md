@@ -59,6 +59,24 @@ In progress.
 - [ ] MP4 recording (FFmpeg writer done; UI Record button pending)
 - [ ] Packaging / installers for all five targets
 
+## Running the macOS build
+
+The macOS build is **unsigned and not notarized**, so Gatekeeper blocks it on
+first launch. To run it:
+
+1. Download and unzip `hnd-viewer-v0.1.0-macos.app.zip`.
+2. **Right-click** `hnd_viewer.app` → **Open** → **Open** (once).
+
+Or via Terminal:
+
+```sh
+xattr -cr /path/to/hnd_viewer.app
+open /path/to/hnd_viewer.app
+```
+
+On first run macOS may also ask to allow **local network** access (to reach the
+camera) and **Downloads** (to save snapshots) — accept both.
+
 ## Development
 
 Requires the Flutter SDK (stable channel).
