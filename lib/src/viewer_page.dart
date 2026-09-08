@@ -146,26 +146,31 @@ class _ViewerPageState extends State<ViewerPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = math.min(constraints.maxWidth, constraints.maxHeight);
-        final Widget video = _frame == null
+        // Only rotate/flip/brighten the actual video frame. The "No video"
+        // placeholder must stay upright, so it is rendered outside the
+        // Transform.rotate (the camera image is mounted 180° rotated, hence
+        // the default _extraRotation).
+        final Widget stage = _frame == null
             ? const Center(child: Text('No video — connect to the camera'))
-            : Image.memory(_frame!, gaplessPlayback: true, fit: BoxFit.cover);
+            : Transform.rotate(
+                angle: angleRad,
+                child: Transform.flip(
+                  flipX: _mirror,
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.matrix(brightness),
+                    child: SizedBox(
+                      width: size,
+                      height: size,
+                      child: Image.memory(_frame!,
+                          gaplessPlayback: true, fit: BoxFit.cover),
+                    ),
+                  ),
+                ),
+              );
         return Container(
           color: const Color(0xFF05070A),
           alignment: Alignment.center,
-          child: Transform.rotate(
-            angle: angleRad,
-            child: Transform.flip(
-              flipX: _mirror,
-              child: ColorFiltered(
-                colorFilter: ColorFilter.matrix(brightness),
-                child: SizedBox(
-                  width: size,
-                  height: size,
-                  child: video,
-                ),
-              ),
-            ),
-          ),
+          child: stage,
         );
       },
     );
