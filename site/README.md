@@ -48,9 +48,8 @@ fetch/XHR dependencies, so the `file://` URL renders identically.
 
 ## Deploying to GitHub Pages
 
-The site is deployed from the **`site/` directory** via a GitHub Actions
-workflow. That workflow is **not part of this directory** (it will live at
-`.github/workflows/` in the repo root). Whatever workflow is written should:
+The site is deployed from the **`site/` directory** via the GitHub Actions
+workflow at `.github/workflows/pages.yml` (repo root). It:
 
 1. Trigger on push to the default branch (and/or new release tags).
 2. Check out the repository.
@@ -72,24 +71,14 @@ Why this works with no extra steps:
   it at the repo root (`https://<owner>.github.io/hnd-viewer/`) or under any
   other base path.
 
-## Placeholders to replace before going live
+## GitHub links
 
-All GitHub links on the page are clearly-marked placeholders using the
-literal owner string `OWNER`. Before the first real deployment, replace
-`OWNER` with the real GitHub owner in `index.html` (they appear with HTML
-comments and `title="… placeholder …"` attributes — search for `OWNER`):
-
-| What | Current href |
-|------|--------------|
-| Repository | `https://github.com/OWNER/hnd-viewer` |
-| Releases / Download | `https://github.com/OWNER/hnd-viewer/releases/latest` |
-| README | `https://github.com/OWNER/hnd-viewer#readme` |
-| Protocol doc | `https://github.com/OWNER/hnd-viewer/blob/main/docs/PROTOCOL.md` |
-
-Why the repo README and `docs/PROTOCOL.md` links are absolute GitHub URLs
-rather than relative links: the Pages deployment publishes **only** this
-`site/` directory, so `../README.md` or `docs/PROTOCOL.md` relative targets
-would not exist on the deployed site.
+The page links to the canonical repository at
+`https://github.com/fuho/hnd-viewer` (repo, releases, README, and
+`docs/PROTOCOL.md`). The repo README and `docs/PROTOCOL.md` links are absolute
+GitHub URLs rather than relative links because the Pages deployment publishes
+**only** this `site/` directory, so `../README.md` or `docs/PROTOCOL.md`
+relative targets would not exist on the deployed site.
 
 ### Screenshots
 
