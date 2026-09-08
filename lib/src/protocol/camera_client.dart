@@ -89,19 +89,22 @@ class CameraClient {
     final RawDatagramSocket s =
         await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
     s.broadcastEnabled = true;
-    final Completer<String?> done = Completer<String?>();
-    s.listen((event) {
-      if (event == RawSocketEvent.read && !done.isCompleted) {
-        final Datagram? d = s.receive();
-        if (d != null) done.complete(String.fromCharCodes(d.data));
-      }
-    });
-    s.send(wake, InternetAddress(broadcast), portDiscovery);
-    s.send(wake, InternetAddress(broadcast), portDiscovery);
-    return done.future.timeout(timeout, onTimeout: () {
-      s.close();
+    try {
+      final Completer<String?> done = Completer<String?>();
+      s.listen((event) {
+        if (event == RawSocketEvent.read && !done.isCompleted) {
+          final Datagram? d = s.receive();
+          if (d != null) done.complete(String.fromCharCodes(d.data));
+        }
+      });
+      s.send(wake, InternetAddress(broadcast), portDiscovery);
+      s.send(wake, InternetAddress(broadcast), portDiscovery);
+      return await done.future.timeout(timeout);
+    } on TimeoutException {
       return null;
-    });
+    } finally {
+      s.close();
+    }
   }
 
   void _onVideoEvent(RawSocketEvent event) {
