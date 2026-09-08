@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -123,12 +124,25 @@ class _ViewerPageState extends State<ViewerPage> {
   Future<void> _saveSnapshot() async {
     final frame = _frame;
     if (frame == null) return;
-    final name = 'hnd_${DateTime.now().millisecondsSinceEpoch}';
+    final String baseName = 'hnd_${DateTime.now().millisecondsSinceEpoch}';
     try {
-      await Gal.putImageBytes(frame, name: name);
+      final String message;
+      if (Platform.isAndroid || Platform.isIOS) {
+        // Mobile: save to the system gallery via `gal`.
+        await Gal.putImageBytes(frame, name: baseName);
+        message = 'Snapshot saved to gallery';
+      } else {
+        // Desktop: write a plain file to ~/Downloads — no photo-library
+        // permission prompt, and it can be run again freely.
+        final Directory dir = await _downloadsDirectory();
+        final File file =
+            File('${dir.path}${Platform.pathSeparator}$baseName.jpg');
+        await file.writeAsBytes(frame, flush: true);
+        message = 'Snapshot saved: ${file.path}';
+      }
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Snapshot saved: $name')));
+            .showSnackBar(SnackBar(content: Text(message)));
       }
     } catch (e) {
       if (mounted) {
@@ -136,6 +150,21 @@ class _ViewerPageState extends State<ViewerPage> {
             .showSnackBar(SnackBar(content: Text('Snapshot failed: $e')));
       }
     }
+  }
+
+  /// The user's Downloads directory (created if missing), used for desktop
+  /// snapshots. Falls back to the system temp dir if no home is set.
+  Future<Directory> _downloadsDirectory() async {
+    final String? home = Platform.isWindows
+        ? Platform.environment['USERPROFILE']
+        : Platform.environment['HOME'];
+    final Directory dir = home == null
+        ? Directory.systemTemp
+        : Directory('$home${Platform.pathSeparator}Downloads');
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    return dir;
   }
 
   Future<void> _toggleRecording() async {

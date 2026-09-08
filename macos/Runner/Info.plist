@@ -28,9 +28,5 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Saves snapshots and recordings to your photo library.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Saves snapshots and recordings to your photo library.</string>
 </dict>
 </plist>
