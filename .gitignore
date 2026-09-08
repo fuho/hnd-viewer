@@ -54,3 +54,7 @@ app.*.map.json
 
 # Gradle cache redirected here to stay inside the workspace sandbox.
 .gradle/
+
+# Workspace-local Android SDK overlay (symlinks to the real SDK + android-36).
+.android-sdk/
+.sdk-dl/

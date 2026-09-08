@@ -13,6 +13,17 @@ android {
     // Pin to the installed build-tools (Flutter's default 36.0.0 is absent).
     buildToolsVersion = "37.0.0"
 
+    // Use a workspace-local debug keystore (the default ~/.android one is not
+    // writable in this environment).
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("../debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
