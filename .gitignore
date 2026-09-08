@@ -62,3 +62,6 @@ app.*.map.json
 # Packaging output (flutter_distributor) and CI release staging.
 /dist/
 /release-files/
+
+# Large original screen recordings (a compressed .mp4 copy is committed instead).
+media/screenshots/*.mov

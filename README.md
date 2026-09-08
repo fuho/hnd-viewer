@@ -25,6 +25,20 @@ is a free, open, fully offline-capable replacement viewer.
 - Snapshot to gallery
 - MP4 recording (FFmpeg writer done; UI wiring pending)
 
+## Screenshots / demo
+
+Live camera view with the gyro roll overlay:
+
+![hnd-viewer live camera view](media/screenshots/live-view-1.png)
+
+The viewer window and controls:
+
+![hnd-viewer viewer window](media/screenshots/live-view-2.png)
+
+Screen recording of hnd-viewer streaming from the camera:
+
+<video src="media/screenshots/hnd-viewer-demo.mp4" controls width="640"></video>
+
 ## The protocol
 
 The camera runs **no HTTP server** — everything is raw UDP on fixed ports.
@@ -39,7 +53,7 @@ In progress.
 
 - [x] Standalone repo + 5-platform scaffold (Android/iOS/macOS/Windows/Linux)
 - [x] Pure-Dart protocol core (discovery + video reassembly + gyro/roll),
-      unit-tested — 16 tests, including a loopback UDP integration test
+      unit-tested — 27 tests, including a loopback UDP integration test
 - [x] Live-view UI (video + gyro roll + rotation/mirror/brightness/smoothing)
 - [x] Snapshot to gallery
 - [ ] MP4 recording (FFmpeg writer done; UI Record button pending)
