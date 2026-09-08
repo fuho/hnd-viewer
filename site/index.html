@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>hnd-viewer · HND-NE3 ear camera viewer</title>
-  <meta name="description" content="hnd-viewer is a free, open, offline viewer for the HND-NE3 ear camera: live 480×480 video and gyro orientation over raw UDP — no vendor app, no cloud.">
-  <meta name="theme-color" content="#0b1120">
+  <meta name="description" content="hnd-viewer is a free, open viewer for the HND-NE3 ear camera: live 480×480 video and gyro orientation over raw UDP, with no vendor app and no cloud.">
+  <meta name="theme-color" content="#fafafa">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,24 +14,16 @@
 
   <!-- ============================== Header / nav ============================== -->
   <header class="site-header">
-    <nav class="container nav" aria-label="Primary">
-      <a class="brand" href="#top">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/>
-          <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
-          <path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        hnd-viewer
-      </a>
+    <nav class="nav container" aria-label="Primary">
+      <a class="brand" href="#top">hnd-viewer</a>
       <ul class="nav-links">
-        <li><a href="#preview">Preview</a></li>
-        <li><a href="#features">Features</a></li>
+        <li><a href="#preview">Live view</a></li>
+        <li><a href="#features">What it does</a></li>
         <li><a href="#how-it-works">How it works</a></li>
         <li><a href="#downloads">Downloads</a></li>
         <li><a href="#get-started">Get started</a></li>
       </ul>
-      
-      <a class="nav-cta" href="https://github.com/fuho/hnd-viewer" title="GitHub repository">GitHub</a>
+      <a class="nav-gh" href="https://github.com/fuho/hnd-viewer">GitHub</a>
     </nav>
   </header>
 
@@ -39,35 +31,21 @@
 
     <!-- ============================== Hero ============================== -->
     <section class="hero" id="top">
-      <div class="container hero-inner">
-        <p class="eyebrow">Free &nbsp;·&nbsp; Open source &nbsp;·&nbsp; Fully offline</p>
-        <h1 class="hero-title">HND-NE3 <span class="grad">ear camera</span> viewer</h1>
-        <p class="hero-tagline">Live 480×480 video + gyro orientation from your factory-sealed ear camera — over raw UDP, no vendor app, no cloud.</p>
-        <div class="hero-cta">
-          
-          <a class="btn btn-primary" href="https://github.com/fuho/hnd-viewer/releases/latest" title="Download the latest release">Download</a>
-          
-          <a class="btn btn-ghost" href="https://github.com/fuho/hnd-viewer" title="View source on GitHub">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-            View on GitHub
-          </a>
-        </div>
-        <ul class="platforms" aria-label="Supported platforms">
-          <li><span class="dot dot-android"></span>Android</li>
-          <li><span class="dot dot-ios"></span>iOS</li>
-          <li><span class="dot dot-macos"></span>macOS</li>
-          <li><span class="dot dot-windows"></span>Windows</li>
-          <li><span class="dot dot-linux"></span>Linux</li>
-        </ul>
+      <div class="container">
+        <h1 class="hero-title">hnd-viewer</h1>
+        <p class="hero-sub">A free, open viewer for the HND-NE3 ear camera.</p>
+        <p class="hero-actions">
+          <a class="btn" href="https://github.com/fuho/hnd-viewer/releases/latest">Download</a>
+          <a class="text-link" href="https://github.com/fuho/hnd-viewer">View on GitHub</a>
+        </p>
       </div>
     </section>
 
-    <!-- ============================== Preview / screenshot placeholder ============================== -->
+    <!-- ============================== Live view / screenshot placeholder ============================== -->
     <section class="section" id="preview">
       <div class="container">
-        <p class="eyebrow">Preview</p>
-        <h2>What the live view looks like</h2>
-        <p class="lede">A factory-sealed HND-NE3 camera boots its own Wi-Fi access point and streams a ~12 fps 480×480 JPEG image plus sensor data. The app renders it with a gyro roll overlay.</p>
+        <h2>Live view</h2>
+        <p class="lede">A factory-sealed HND-NE3 camera boots its own Wi-Fi access point and streams a roughly 12 fps 480×480 JPEG image plus sensor data. hnd-viewer renders it with a gyro roll overlay.</p>
 
         <!-- ============================================================================
              SCREENSHOT / GIF PLACEHOLDER
@@ -77,241 +55,118 @@
                <figure class="shot">
                  <img src="assets/screenshots/live-view.png"
                       alt="Live 480×480 video with gyro roll overlay in the hnd-viewer app">
-                 <figcaption>Live view on Android — screenshot coming soon.</figcaption>
+                 <figcaption>Live view on Android.</figcaption>
                </figure>
 
              Keep the caption and the class="shot" styles so it matches the layout.
              A looping GIF or an mp4 (with <video>) works just as well here.
              ============================================================================ -->
-        <figure class="shot" aria-label="Placeholder for a screenshot of the live 480×480 view">
-          <svg class="viewfinder" viewBox="0 0 480 480" role="img" aria-hidden="true">
-            <defs>
-              <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#111a2c"/>
-                <stop offset="1" stop-color="#0a101f"/>
-              </linearGradient>
-              <radialGradient id="scope" cx="50%" cy="45%" r="65%">
-                <stop offset="0" stop-color="#22d3ee" stop-opacity="0.16"/>
-                <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <rect width="480" height="480" rx="18" fill="url(#screen)"/>
-            <rect width="480" height="480" rx="18" fill="url(#scope)"/>
-            <!-- subtle scan lines -->
-            <g stroke="#ffffff" stroke-opacity="0.02" stroke-width="1">
-              <line x1="0" y1="48"  x2="480" y2="48"/>
-              <line x1="0" y1="96"  x2="480" y2="96"/>
-              <line x1="0" y1="144" x2="480" y2="144"/>
-              <line x1="0" y1="192" x2="480" y2="192"/>
-              <line x1="0" y1="240" x2="480" y2="240"/>
-              <line x1="0" y1="288" x2="480" y2="288"/>
-              <line x1="0" y1="336" x2="480" y2="336"/>
-              <line x1="0" y1="384" x2="480" y2="384"/>
-              <line x1="0" y1="432" x2="480" y2="432"/>
-            </g>
-            <!-- focus brackets -->
-            <path d="M120 120h-34v-34M360 120h34v-34M120 360v34h-34M360 360h34v34"
-                  fill="none" stroke="#67e8f9" stroke-width="3" stroke-linecap="round" stroke-opacity="0.55"/>
-            <!-- crosshair -->
-            <g stroke="#67e8f9" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8">
-              <path d="M240 96v-24M240 384v24M96 240H72M384 240h24"/>
-              <circle cx="240" cy="240" r="70" fill="none" stroke-opacity="0.6"/>
-              <circle cx="240" cy="240" r="8" fill="#67e8f9" fill-opacity="0.9"/>
-            </g>
-            <!-- ghost disc (stands in for the ear-canal image) -->
-            <ellipse cx="240" cy="244" rx="150" ry="128" fill="none" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.14"/>
-            <!-- HUD text -->
-            <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
-              <rect x="24" y="22" width="150" height="30" rx="15" fill="#082f3a" fill-opacity="0.85"/>
-              <circle cx="40" cy="37" r="4" fill="#fb7185"/>
-              <text x="52" y="42" fill="#5eead4">LIVE · 480×480</text>
-              <rect x="326" y="428" width="130" height="30" rx="15" fill="#082f3a" fill-opacity="0.85"/>
-              <text x="340" y="448" fill="#93c5fd">ROLL 12.4°</text>
-            </g>
-          </svg>
-          <figcaption>Screenshot placeholder — a real capture of the live view will replace this frame once screenshots exist.</figcaption>
+        <figure class="shot">
+          <div class="shot-box">Screenshot coming soon.</div>
+          <figcaption>A capture of the live 480×480 view will replace this placeholder once screenshots exist.</figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- ============================== Features ============================== -->
-    <section class="section section-alt" id="features">
+    <!-- ============================== What it does ============================== -->
+    <section class="section" id="features">
       <div class="container">
-        <p class="eyebrow">What it does</p>
-        <h2>Everything the vendor app did — none of the baggage</h2>
+        <h2>What it does</h2>
         <p class="lede">The camera ships sealed with its own Wi-Fi hotspot. hnd-viewer talks to it directly, so there is no vendor app, no account, and no cloud in the loop.</p>
 
-        <ul class="grid grid-features">
-          <li class="card">
-            <span class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 15.5a6 6 0 0 1 7 0"/><path d="M2 9.5a14.5 14.5 0 0 1 20 0"/><circle cx="12" cy="18.5" r="1.4" fill="currentColor" stroke="none"/></svg>
-            </span>
-            <h3>Discover &amp; connect</h3>
-            <p>Finds the camera&rsquo;s Wi-Fi access point (SSID <code class="mono">HNDEC_55-…</code>) and joins it. Gateway <code class="mono">192.168.1.1</code> — no IP hunting, no config file.</p>
+        <ul class="feature-list">
+          <li>
+            <h3>Discover and connect</h3>
+            <p>Joins the camera&rsquo;s Wi-Fi access point (SSID <code>HNDEC_55-&hellip;</code>); the gateway is <code>192.168.1.1</code>. No IP hunting, no configuration file.</p>
           </li>
-          <li class="card">
-            <span class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="m15.5 10.5 6-3v9l-6-3"/></svg>
-            </span>
+          <li>
             <h3>Live 480×480 video</h3>
-            <p>Watch the JPEG stream in real time with rotation, mirror, and brightness controls.</p>
+            <p>Shows the JPEG stream in real time with rotation, mirror, and brightness controls.</p>
           </li>
-          <li class="card">
-            <span class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 12l5-5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>
-            </span>
+          <li>
             <h3>Gyro roll overlay</h3>
-            <p>Reads the camera&rsquo;s own 3-axis accelerometer over UDP and draws its roll orientation on top of the video.</p>
+            <p>Reads the camera&rsquo;s own three-axis accelerometer over UDP and draws its roll orientation over the video.</p>
           </li>
-          <li class="card">
-            <span class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 12 2 9.5 4.5H6a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3.5"/><path d="M14.5 4.5h3.5a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H18"/><circle cx="12" cy="12.5" r="3.5"/><path d="M12 9v-2M12 18v-3.2"/></svg>
-            </span>
+          <li>
             <h3>Snapshot to gallery</h3>
-            <p>Save any frame to the device photo library with one tap.</p>
+            <p>Saves any frame to the device photo library with one tap.</p>
           </li>
-          <li class="card">
-            <span class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="12.5" rx="2.5"/><path d="M7 20.5h10M12 16.5v4"/><path d="m10 12 4-2.5-4-2.5z"/></svg>
-            </span>
-            <h3>MP4 recording <span class="tag tag-wip">In progress</span></h3>
-            <p>The FFmpeg-based writer is done; wiring the Record button into the UI is in progress.</p>
+          <li>
+            <h3>MP4 recording</h3>
+            <p>The FFmpeg-based writer is complete; wiring the Record button into the interface is in progress.</p>
           </li>
-          <li class="card">
-            <span class="card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4.5"/></svg>
-            </span>
-            <h3>Offline &amp; open</h3>
-            <p>The camera AP has no internet and the app needs none: raw UDP only, zero cloud, and source you can read and audit.</p>
+          <li>
+            <h3>Offline and open</h3>
+            <p>The camera access point has no internet and the app needs none: raw UDP only, no cloud, and source code you can read and audit.</p>
           </li>
         </ul>
-
-        <div class="banner">
-          <div class="banner-body">
-            <h3>Why not a web page?</h3>
-            <p>The camera runs <strong>no HTTP server</strong> — everything is raw UDP on fixed ports, and browsers can&rsquo;t open UDP sockets. That is exactly why this is a native app on your phone or laptop, and why it works on a plane: no internet required at any point.</p>
-          </div>
-          <div class="banner-side" aria-hidden="true">
-            <span class="chip"><span class="mono">66&nbsp;30&nbsp;01&nbsp;01</span><span class="chip-label">wake / discover</span></span>
-            <span class="chip"><span class="mono">20&nbsp;36</span><span class="chip-label">start video</span></span>
-            <span class="chip"><span class="mono">86&nbsp;06&nbsp;01</span><span class="chip-label">gyro subscribe</span></span>
-          </div>
-        </div>
       </div>
     </section>
 
     <!-- ============================== How it works ============================== -->
     <section class="section" id="how-it-works">
       <div class="container">
-        <p class="eyebrow">Under the hood</p>
-        <h2>How it talks to the camera</h2>
-        <p class="lede">The HND-NE3-D (Beken BK7231) exposes no web interface — a small set of raw UDP datagrams controls everything. The wire format was reverse-engineered and re-implemented from scratch for this project; it carries no vendor code.</p>
+        <h2>How it works</h2>
+        <p class="lede">The HND-NE3-D (Beken BK7231) exposes no web interface. A small set of raw UDP datagrams controls everything, and the wire format was reverse-engineered and re-implemented from scratch for this project &mdash; it carries no vendor code. Browsers cannot open raw UDP sockets, which is why this is a native app, and why it needs no internet at any point.</p>
 
         <ol class="steps">
-          <li class="step">
-            <span class="step-num" aria-hidden="true">1</span>
-            <div class="step-body">
-              <h3>The camera is its own network</h3>
-              <p>It boots a Wi-Fi access point (<code class="mono">HNDEC_55-…</code>) with gateway <code class="mono">192.168.1.1</code>. The viewer joins that AP as a DHCP client — no internet is needed or provided.</p>
-            </div>
+          <li>
+            <h3>The camera is its own network</h3>
+            <p>It boots a Wi-Fi access point (SSID <code>HNDEC_55-&hellip;</code>) with gateway <code>192.168.1.1</code>. The viewer joins that access point as a DHCP client; no internet is needed or provided.</p>
           </li>
-          <li class="step">
-            <span class="step-num" aria-hidden="true">2</span>
-            <div class="step-body">
-              <h3>Discover &amp; wake</h3>
-              <p>The viewer broadcasts the 4-byte datagram <code class="mono">66 30 01 01</code> to <code class="mono">192.168.1.255:46526</code>; the camera answers with a JSON identity document. Discovery is optional — the stream address is fixed, so the app can skip straight to video.</p>
-            </div>
+          <li>
+            <h3>Wake and discover</h3>
+            <p>The viewer broadcasts the four-byte datagram <code>66 30 01 01</code> to <code>192.168.1.255:46526</code>, and the camera answers with a JSON identity document. Discovery is optional &mdash; the stream address is fixed, so the app can skip straight to video.</p>
           </li>
-          <li class="step">
-            <span class="step-num" aria-hidden="true">3</span>
-            <div class="step-body">
-              <h3>Start the video</h3>
-              <p>Sending <code class="mono">20 36</code> to <code class="mono">192.168.1.1:44506</code> starts the stream. Frames arrive as 480×480 JPEG fragments that are reassembled over <strong>3 rotating buffers × 40 slots</strong> before decoding.</p>
-            </div>
+          <li>
+            <h3>Start the video</h3>
+            <p>Sending <code>20 36</code> to <code>192.168.1.1:44506</code> starts the stream. Frames arrive as 480×480 JPEG fragments and are reassembled over 3 rotating buffers × 40 slots before decoding.</p>
           </li>
-          <li class="step">
-            <span class="step-num" aria-hidden="true">4</span>
-            <div class="step-body">
-              <h3>Subscribe to the gyro</h3>
-              <p><code class="mono">86 06 01</code> to <code class="mono">192.168.1.1:52219</code> turns on 3-axis accelerometer telemetry, which the app renders as a roll overlay.</p>
-            </div>
+          <li>
+            <h3>Subscribe to the gyro</h3>
+            <p><code>86 06 01</code> to <code>192.168.1.1:52219</code> turns on three-axis accelerometer telemetry, which the app renders as a roll overlay.</p>
           </li>
-          <li class="step">
-            <span class="step-num" aria-hidden="true">5</span>
-            <div class="step-body">
-              <h3>Render, snapshot, record</h3>
-              <p>Everything downstream is plain Flutter: decode and paint each frame, overlay the orientation, snap to the gallery, or write MP4 via the FFmpeg writer.</p>
-            </div>
+          <li>
+            <h3>Render, snapshot, record</h3>
+            <p>Everything downstream is plain Flutter: decode and paint each frame, draw the orientation overlay, save a frame to the gallery, or write an MP4 with the FFmpeg writer.</p>
           </li>
         </ol>
 
-        <div class="callout">
-          <h3>Full wire spec</h3>
-          <p>Every command, byte layout, and edge case is documented in <code class="mono">docs/PROTOCOL.md</code> in the repository.</p>
-          
-          <a class="btn btn-ghost btn-sm" href="https://github.com/fuho/hnd-viewer/blob/main/docs/PROTOCOL.md" title="docs/PROTOCOL.md on GitHub">Read docs/PROTOCOL.md ↗</a>
-        </div>
+        <p class="note">The full wire specification &mdash; every command, byte layout, and edge case &mdash; is documented in <a href="https://github.com/fuho/hnd-viewer/blob/main/docs/PROTOCOL.md">docs/PROTOCOL.md</a> in the repository.</p>
       </div>
     </section>
 
     <!-- ============================== Downloads ============================== -->
-    <section class="section section-alt" id="downloads">
+    <section class="section" id="downloads">
       <div class="container">
-        <p class="eyebrow">Downloads</p>
-        <h2>Grab a build</h2>
-        <p class="lede">Release artifacts will be published on the project&rsquo;s GitHub Releases page: Android APK, Windows, macOS, and Linux. Packaging is still being set up, so treat this section as a roadmap until the first tagged release.</p>
+        <h2>Downloads</h2>
+        <p class="lede">Artifacts are attached to each release on GitHub Releases.</p>
 
-        <div class="download-hero">
-          <div>
-            <h3>Latest release</h3>
-            <p>All platforms in one place, with checksums and changelogs.</p>
-          </div>
-          
-          <a class="btn btn-primary" href="https://github.com/fuho/hnd-viewer/releases/latest" title="Download the latest release">Download from GitHub Releases</a>
-        </div>
+        <p><a class="btn" href="https://github.com/fuho/hnd-viewer/releases/latest">Download the latest release</a></p>
 
-        <ul class="artifact-list" aria-label="Expected release artifacts">
-          <li>
-            <span class="plat"><span class="dot dot-android"></span>Android</span>
-            <span class="artifact">APK (arm64 / armv7)</span>
-            <span class="tag tag-planned">Planned</span>
-          </li>
-          <li>
-            <span class="plat"><span class="dot dot-windows"></span>Windows</span>
-            <span class="artifact">Installer / portable zip</span>
-            <span class="tag tag-planned">Planned</span>
-          </li>
-          <li>
-            <span class="plat"><span class="dot dot-macos"></span>macOS</span>
-            <span class="artifact">.app bundle / disk image</span>
-            <span class="tag tag-planned">Planned</span>
-          </li>
-          <li>
-            <span class="plat"><span class="dot dot-linux"></span>Linux</span>
-            <span class="artifact">AppImage / tarball</span>
-            <span class="tag tag-planned">Planned</span>
-          </li>
+        <ul class="dl-list" aria-label="Platforms">
+          <li><span class="dl-plat">Android</span><span class="dl-art">APK + AAB</span></li>
+          <li><span class="dl-plat">Windows</span><span class="dl-art">Portable zip</span></li>
+          <li><span class="dl-plat">macOS</span><span class="dl-art">App bundle (.zip)</span></li>
+          <li><span class="dl-plat">Linux</span><span class="dl-art">Tarball</span></li>
         </ul>
-        <p class="artifact-note">Artifact names above are indicative and may change. iOS builds require a developer certificate for sideloading and are not distributed here.</p>
 
+        <p class="note">Artifact names are indicative and may change. iOS builds require a developer certificate for sideloading and are not distributed here.</p>
       </div>
     </section>
 
     <!-- ============================== Getting started ============================== -->
     <section class="section" id="get-started">
       <div class="container">
-        <p class="eyebrow">Getting started</p>
         <h2>Build it yourself</h2>
         <p class="lede">The full development guide lives in the repository README. The short version:</p>
 
-        <div class="prereq">
-          <h3>Prerequisites</h3>
-          <ul>
-            <li><strong>Flutter SDK</strong> (stable channel)</li>
-            <li><strong>Android:</strong> JDK 17 plus an Android SDK with the <code class="mono">android-36</code> platform, an NDK, and build-tools (debug keystore is committed, so <code class="mono">flutter build apk</code> is hermetic)</li>
-            <li><strong>macOS / iOS:</strong> a full Xcode install</li>
-          </ul>
-        </div>
+        <h3 class="subhead">Prerequisites</h3>
+        <ul class="plain-list">
+          <li><strong>Flutter SDK</strong> (stable channel)</li>
+          <li><strong>Android:</strong> JDK 17 plus an Android SDK with the <code>android-36</code> platform, an NDK, and build-tools. The debug keystore is committed, so <code>flutter build apk</code> is hermetic.</li>
+          <li><strong>macOS / iOS:</strong> a full Xcode install</li>
+        </ul>
 
         <pre class="codeblock" aria-label="Build commands"><code>git clone https://github.com/fuho/hnd-viewer.git
 cd hnd-viewer
@@ -320,19 +175,16 @@ flutter test                # protocol unit tests — no device needed
 flutter run                 # live view on a connected device
 flutter build apk --debug   # Android debug APK</code></pre>
 
-        <p class="lede small">Prefer binaries? Grab the <a href="#downloads">latest release</a> instead.</p>
-
-        
-        <a class="btn btn-ghost btn-sm" href="https://github.com/fuho/hnd-viewer#readme" title="Repository README">Full README ↗</a>
+        <p class="note">Prefer a ready-made build? <a href="#downloads">Download the latest release</a> instead.</p>
+        <p><a class="text-link" href="https://github.com/fuho/hnd-viewer#readme">Full README</a></p>
       </div>
     </section>
 
     <!-- ============================== License ============================== -->
-    <section class="section section-slim" id="license">
+    <section class="section" id="license">
       <div class="container">
-        <p class="eyebrow">License</p>
         <h2>License</h2>
-        <p class="lede small">To be chosen. The project is intended to be free and open source; a license will be added before the first public release. Until then all rights are reserved by the copyright holders.</p>
+        <p>To be chosen. The project is intended to be free and open source; a license will be added before the first public release. Until then, all rights are reserved by the copyright holders.</p>
       </div>
     </section>
   </main>
@@ -340,43 +192,35 @@ flutter build apk --debug   # Android debug APK</code></pre>
   <!-- ============================== Footer ============================== -->
   <footer class="site-footer">
     <div class="container footer-grid">
-      <div class="footer-brand">
-        <a class="brand" href="#top">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/>
-            <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
-            <path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          hnd-viewer
-        </a>
-        <p>Free, open, offline viewer for the HND-NE3 ear camera. One Flutter codebase across Android, iOS, macOS, Windows, and Linux.</p>
-        <p class="footnote">Independent community project — not affiliated with the camera&rsquo;s manufacturer.</p>
+      <div class="footer-about">
+        <a class="brand" href="#top">hnd-viewer</a>
+        <p>Free, open viewer for the HND-NE3 ear camera. One Flutter codebase across Android, iOS, macOS, Windows, and Linux.</p>
+        <p class="footnote">Independent community project &mdash; not affiliated with the camera&rsquo;s manufacturer.</p>
       </div>
-      <nav class="footer-col" aria-label="Site">
-        <h4>Site</h4>
+      <nav class="footer-nav" aria-label="Pages">
+        <h4>Pages</h4>
         <ul>
           <li><a href="#top">Top</a></li>
-          <li><a href="#preview">Preview</a></li>
-          <li><a href="#features">Features</a></li>
+          <li><a href="#preview">Live view</a></li>
+          <li><a href="#features">What it does</a></li>
           <li><a href="#how-it-works">How it works</a></li>
           <li><a href="#downloads">Downloads</a></li>
           <li><a href="#get-started">Get started</a></li>
         </ul>
       </nav>
-      <nav class="footer-col" aria-label="Project">
+      <nav class="footer-nav" aria-label="Project">
         <h4>Project</h4>
         <ul>
-          
-          <li><a href="https://github.com/fuho/hnd-viewer" title="GitHub repository">GitHub repository</a></li>
-          <li><a href="https://github.com/fuho/hnd-viewer/releases/latest" title="GitHub Releases">Releases</a></li>
-          <li><a href="https://github.com/fuho/hnd-viewer#readme" title="README">README</a></li>
-          <li><a href="https://github.com/fuho/hnd-viewer/blob/main/docs/PROTOCOL.md" title="docs/PROTOCOL.md">docs/PROTOCOL.md</a></li>
+          <li><a href="https://github.com/fuho/hnd-viewer">GitHub repository</a></li>
+          <li><a href="https://github.com/fuho/hnd-viewer/releases/latest">Releases</a></li>
+          <li><a href="https://github.com/fuho/hnd-viewer#readme">README</a></li>
+          <li><a href="https://github.com/fuho/hnd-viewer/blob/main/docs/PROTOCOL.md">docs/PROTOCOL.md</a></li>
         </ul>
       </nav>
     </div>
     <div class="container footer-bottom">
-      <p>© 2026 hnd-viewer contributors &middot; <a href="#license">License to be chosen</a></p>
-      <p class="mono muted">66 30 01 01 · 20 36 · 86 06 01</p>
+      <p>&copy; 2026 hnd-viewer contributors</p>
+      <p><a href="#license">License</a></p>
     </div>
   </footer>
 </body>

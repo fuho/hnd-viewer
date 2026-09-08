@@ -1,19 +1,27 @@
 # hnd-viewer — project website
 
-Static marketing/landing site for **hnd-viewer**, the free, open, offline
-viewer for the HND-NE3 ear camera.
+Static single-page website for **hnd-viewer**, the free, open viewer for the
+HND-NE3 ear camera.
 
 This is a plain static site: hand-written HTML + CSS, no build step, no
 framework, and **no external CDN dependencies**. It loads fine from `file://`
 or from any static file server, and it works fully offline.
 
+## Design
+
+Quiet and minimal. Near-white background (`#fafafa`), near-black text
+(`#16181d`), hairline separators (`#e5e5e5`), and system fonts only:
+serif headings (Georgia / Iowan Old Style / Times New Roman) over a system
+sans body. No gradients, no glows, no shadows, no decorative icons; links are
+plain near-black underlined text.
+
 ## Structure
 
 ```
 site/
-├── index.html        # single-page landing (all sections, anchor-linked)
-├── css/style.css     # all styling — dark "instrument panel" theme
-├── favicon.svg       # site icon
+├── index.html        # single-page site (all sections, anchor-linked)
+├── css/style.css     # all styling — light, minimal, editorial theme
+├── favicon.svg       # site icon (monochrome mark)
 ├── .nojekyll         # tells GitHub Pages not to run Jekyll
 └── README.md         # this file
 ```
@@ -21,8 +29,8 @@ site/
 There is deliberately no JavaScript: everything on the page (anchors, smooth
 scrolling, layout) works in plain HTML/CSS.
 
-The page is one document with anchor sections: hero → preview (screenshot
-placeholder) → features → how it works (protocol) → downloads → getting
+The page is one document with anchor sections: hero → live view (screenshot
+placeholder) → what it does → how it works (protocol) → downloads → getting
 started → license → footer.
 
 ## Preview locally
@@ -82,6 +90,7 @@ relative targets would not exist on the deployed site.
 
 ### Screenshots
 
-No screenshots exist yet. `index.html` contains a styled placeholder frame
-with an HTML comment marking exactly where a real screenshot or looping GIF
-(and its `<img>`/`<video>` markup) should be dropped in.
+No screenshots exist yet. `index.html` contains a plain light placeholder box
+(`.shot-box`) with the muted text "Screenshot coming soon." and an HTML
+comment marking exactly where a real screenshot or looping GIF (and its
+`<img>`/`<video>` markup) should be dropped in.
