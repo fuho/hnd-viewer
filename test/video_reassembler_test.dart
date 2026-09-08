@@ -60,4 +60,29 @@ void main() {
     // 255 % 3 == 0 and 0 % 3 == 0: the new fid must reset the slot.
     expect(r.push(_frag(0, 1, 1, b)), b);
   });
+
+  test('reassembles a large multi-fragment frame byte-identically', () {
+    final r = VideoReassembler();
+    // ~30 KB payload split across many fragments, with a trailing footer
+    // (the camera appends a short footer after the JPEG EOI marker).
+    final body = Uint8List.fromList(
+        List<int>.generate(30 * 1024, (i) => (i * 31) & 0xff));
+    final jpeg = Uint8List.fromList([0xff, 0xd8, ...body, 0xff, 0xd9]);
+    final payload = Uint8List.fromList([...jpeg, 0xde, 0xad, 0xbe, 0xef]);
+
+    const fragSize = 1000;
+    final n = (payload.length + fragSize - 1) ~/ fragSize;
+    expect(n, lessThanOrEqualTo(40));
+
+    Uint8List? out;
+    for (var i = 0; i < n; i++) {
+      final start = i * fragSize;
+      final end = (start + fragSize) > payload.length
+          ? payload.length
+          : start + fragSize;
+      out = r.push(_frag(42, i == n - 1 ? 1 : 0, i + 1,
+          payload.sublist(start, end)));
+    }
+    expect(out, jpeg);
+  });
 }

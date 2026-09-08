@@ -50,7 +50,13 @@ Requires the Flutter SDK (stable channel).
 flutter pub get
 flutter test              # protocol unit tests (no device needed)
 flutter run               # live view on a connected device
+flutter build apk --debug # Android debug APK
 ```
+
+Android builds need a JDK 17 and an Android SDK containing the `android-36`
+platform, an NDK, and build-tools. `android/debug.keystore` is committed (the
+standard public `androiddebugkey` credential, not a secret) so debug signing
+is hermetic. macOS/iOS builds require a full Xcode install.
 
 ## License
 
