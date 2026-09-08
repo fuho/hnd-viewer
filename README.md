@@ -7,6 +7,9 @@ app required.
 
 One Flutter codebase targeting **Android, iOS, macOS, Windows, and Linux**.
 
+**Website:** <https://txt.fuho.org/hnd-viewer/> · **Source & releases:**
+<https://github.com/fuho/hnd-viewer>
+
 ## Why
 
 The factory unit boots its own Wi-Fi AP (`HNDEC_55-xxxxxx`) and streams a
