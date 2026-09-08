@@ -177,13 +177,10 @@ class _SensorChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_SensorChartPainter oldDelegate) {
-    // The rolling list is mutated in place between frames: a repaint is
-    // needed whenever a new sample became the last element (either appended,
-    // or shifted in when the buffer is at its cap).
-    if (!identical(points, oldDelegate.points)) return true;
-    if (points.isEmpty || oldDelegate.points.isEmpty) {
-      return points.isNotEmpty || oldDelegate.points.isNotEmpty;
-    }
-    return !identical(points.last, oldDelegate.points.last);
+    // The rolling list is mutated in place, so `oldDelegate.points` and
+    // `points` are the same list object and a `last`-identity check can never
+    // detect a new sample. Repaint on every rebuild instead — this chart is
+    // small, so it is cheap.
+    return true;
   }
 }

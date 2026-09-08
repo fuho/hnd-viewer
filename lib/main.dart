@@ -14,7 +14,16 @@ class HndViewerApp extends StatelessWidget {
     return MaterialApp(
       title: 'hnd-viewer',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData.dark(useMaterial3: true).copyWith(
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+          ),
+        ),
+      ),
       home: const ViewerPage(),
     );
   }

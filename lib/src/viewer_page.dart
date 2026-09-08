@@ -310,35 +310,38 @@ class _ViewerPageState extends State<ViewerPage> {
             'HND-NE3-D Ear Camera',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          const SizedBox(height: 4),
-          Text(
-            _status,
-            style: TextStyle(
-              color: _connected ? Colors.lightGreen : Colors.blueGrey,
-              fontSize: 12,
-            ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _status,
+                  style: TextStyle(
+                    color: _connected ? Colors.lightGreen : Colors.blueGrey,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              FilledButton(
+                onPressed: _connected ? _disconnect : _connect,
+                child: _buttonLabel(_connected ? 'Disconnect' : 'Connect'),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                child: FilledButton(
-                  onPressed: _connected ? _disconnect : _connect,
-                  child: Text(_connected ? 'Disconnect' : 'Connect'),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
                 child: FilledButton.tonal(
                   onPressed: _frame != null ? _saveSnapshot : null,
-                  child: const Text('Snapshot'),
+                  child: _buttonLabel('Snapshot'),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: FilledButton.tonal(
                   onPressed: _frame != null ? _toggleRecording : null,
-                  child: Text(_recording ? 'Stop recording' : 'Record'),
+                  child: _buttonLabel(_recording ? 'Stop recording' : 'Record'),
                 ),
               ),
             ],
@@ -470,6 +473,14 @@ class _ViewerPageState extends State<ViewerPage> {
       ],
     );
   }
+
+  /// One-line button label; never wraps.
+  Widget _buttonLabel(String text) => Text(
+        text,
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
+      );
 
   Widget _slider(
     String label,
