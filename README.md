@@ -100,4 +100,4 @@ is hermetic. macOS/iOS builds require a full Xcode install.
 
 ## License
 
-To be chosen.
+[MIT](LICENSE)
