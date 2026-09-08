@@ -7,7 +7,9 @@ class RollFilter {
   RollFilter({this.alpha = 0.15, this.deadband = 0.3});
 
   /// EMA factor applied when the change exceeds [deadband].
-  final double alpha;
+  ///
+  /// Mutable so the UI can tune smoothing live.
+  double alpha;
 
   /// Minimum change (degrees) before the smoothed value is updated.
   final double deadband;
