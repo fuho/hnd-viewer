@@ -51,3 +51,6 @@ app.*.map.json
 # Flutter's per-user state (config + pub cache) redirected here to stay inside
 # the workspace sandbox.
 .flutter-user/
+
+# Gradle cache redirected here to stay inside the workspace sandbox.
+.gradle/

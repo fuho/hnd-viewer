@@ -32,13 +32,15 @@ project; it carries no vendor code.
 
 ## Status
 
-Early. Next milestones, in order:
+In progress.
 
-1. Pure-Dart protocol core (discovery + video reassembly + gyro), unit-tested
-   against recorded captures
-2. Live-view UI (video + gyro overlay + controls)
-3. Snapshot
-4. MP4 recording
+- [x] Standalone repo + 5-platform scaffold (Android/iOS/macOS/Windows/Linux)
+- [x] Pure-Dart protocol core (discovery + video reassembly + gyro/roll),
+      unit-tested — 16 tests, including a loopback UDP integration test
+- [x] Live-view UI (video + gyro roll + rotation/mirror/brightness/smoothing)
+- [ ] Snapshot to gallery
+- [ ] MP4 recording
+- [ ] Packaging / installers for all five targets
 
 ## Development
 

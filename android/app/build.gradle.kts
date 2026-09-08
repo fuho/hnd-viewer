@@ -7,7 +7,11 @@ plugins {
 android {
     namespace = "com.hndviewer.hnd_viewer"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // Pin to the NDK already installed on this machine (Flutter's default
+    // 28.2 is not present and cannot be auto-downloaded here).
+    ndkVersion = "30.0.14904198"
+    // Pin to the installed build-tools (Flutter's default 36.0.0 is absent).
+    buildToolsVersion = "37.0.0"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
