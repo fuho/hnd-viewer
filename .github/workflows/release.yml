@@ -2,6 +2,9 @@ name: Release
 
 # Build release artifacts for every supported desktop/mobile target and attach
 # them to the GitHub Release created for the pushed tag.
+#
+# We ship the plain `flutter build` outputs (APK/AAB, Linux bundle tarball,
+# Windows folder zip, macOS .app zip). No installer tooling — keep it simple.
 on:
   push:
     tags:
@@ -9,16 +12,9 @@ on:
 
 # ---------------------------------------------------------------------------
 # iOS is intentionally NOT built here (out of scope for this initial release).
-#
-# TODO(iOS): Building the iOS app requires:
-#   - a macOS runner (Xcode + CocoaPods) — same host class as the macOS job,
-#   - an Apple Developer account with signing certs / provisioning profiles,
-#   - exporting an .ipa or uploading to App Store Connect via TestFlight,
-#   - the app's PRODUCT_BUNDLE_IDENTIFIER (com.hndviewer.hndViewer) registered
-#     in the developer portal.
-# None of those credentials/decisions exist yet, so no iOS job is defined. Add
-# one here when signing + TestFlight credentials are available (see the
-# App-Store-Connect / fastlane documentation for a recommended pattern).
+# It requires an Apple Developer account + signing certs/provisioning profiles,
+# and Xcode/TestFlight — none of which are configured yet. Add a job here when
+# those exist.
 # ---------------------------------------------------------------------------
 
 permissions:
@@ -39,11 +35,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Android (APK/AAB) + Linux desktop (AppImage/deb/tar.gz)
+          - name: Android (APK/AAB) + Linux desktop
             os: ubuntu-latest
-          - name: Windows desktop (msix/zip)
+          - name: Windows desktop
             os: windows-latest
-          - name: macOS desktop (dmg)
+          - name: macOS desktop
             os: macos-latest
 
     steps:
@@ -62,7 +58,7 @@ jobs:
         run: flutter pub get
 
       # ---------------------------------------------------------------------
-      # Ubuntu: Android APK/AAB + Linux desktop packages
+      # Ubuntu: Android APK/AAB + Linux desktop bundle
       # ---------------------------------------------------------------------
       - name: Set up JDK 17 (Android build)
         if: runner.os == 'Linux'
@@ -72,20 +68,12 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Install Linux desktop build dependencies + AppImage tooling
+      - name: Install Linux desktop build dependencies
         if: runner.os == 'Linux'
         run: |
           set -euxo pipefail
           sudo apt-get update
-          # Standard Flutter Linux desktop build requirements.
           sudo apt-get install -y ninja-build libgtk-3-dev clang cmake pkg-config liblzma-dev
-          # appimagetool is itself an AppImage and needs FUSE to run. libfuse2
-          # is packaged as libfuse2t64 on Ubuntu 24.04+ (current ubuntu-latest).
-          sudo apt-get install -y libfuse2 || sudo apt-get install -y libfuse2t64
-          # flutter_distributor's AppImage maker invokes `appimagetool` from PATH.
-          wget -q -O /tmp/appimagetool \
-            https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
-          sudo install -m 0755 /tmp/appimagetool /usr/local/bin/appimagetool
 
       # android/app/build.gradle.kts pins ndkVersion "30.0.14904198" and
       # buildToolsVersion "37.0.0" (see the file for why). A stock GitHub
@@ -103,16 +91,14 @@ jobs:
             echo "::error::sdkmanager not found under ANDROID_HOME ($ANDROID_HOME)"
             exit 1
           fi
-          echo "Using sdkmanager: $SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" "ndk;30.0.14904198" "build-tools;37.0.0"
-          "$SDKMANAGER" --list_installed | grep -E "ndk;30\.0\.14904198|build-tools;37\.0\.0" || true
 
       # Android release signing: android/app/build.gradle.kts signs the release
       # build with the committed android/debug.keystore (the well-known public
-      # "androiddebugkey" credential). That is intentional and fine for this
-      # initial open release — CI needs no secrets. A real release keystore can
-      # be wired in later via GitHub secrets without touching this workflow.
+      # "androiddebugkey" credential). Fine for an initial open release — CI
+      # needs no secrets. A real release keystore can be added later via GitHub
+      # secrets without touching this workflow.
       - name: Build Android APKs (release, per-ABI)
         if: runner.os == 'Linux'
         run: flutter build apk --release --split-per-abi
@@ -121,28 +107,9 @@ jobs:
         if: runner.os == 'Linux'
         run: flutter build appbundle --release
 
-      # Raw `flutter build` output first: it is the guaranteed fallback upload
-      # in case a flutter_distributor format below fails.
       - name: Build Linux desktop bundle (release)
         if: runner.os == 'Linux'
         run: flutter build linux --release
-
-      - name: Package Linux formats with flutter_distributor (best effort)
-        if: runner.os == 'Linux'
-        env:
-          # Let appimagetool run without FUSE mounting (CI-friendly).
-          APPIMAGE_EXTRACT_AND_RUN: '1'
-        run: |
-          # flutter_distributor is invoked via `dart pub global run` so no
-          # assumption is made about where the pub cache lives (PATH stays
-          # untouched on every OS).
-          dart pub global activate flutter_distributor 0.6.10
-          # --skip-clean keeps the build output produced above (fallback) and
-          # avoids cleaning between the two formats.
-          dart pub global run flutter_distributor package --platform linux --targets appimage --skip-clean \
-            || echo "::warning::AppImage packaging failed; uploading the raw Linux bundle instead"
-          dart pub global run flutter_distributor package --platform linux --targets deb --skip-clean \
-            || echo "::warning::deb packaging failed; uploading the raw Linux bundle instead"
 
       - name: Stage release files (Linux + Android)
         if: runner.os == 'Linux'
@@ -150,42 +117,25 @@ jobs:
           set -euxo pipefail
           STAGE="release-files"
           mkdir -p "$STAGE"
-          # Android APKs + AAB produced by flutter build.
-          cp -f build/app/outputs/flutter-apk/*.apk "$STAGE"/ 2>/dev/null || true
-          cp -f build/app/outputs/bundle/release/*.aab "$STAGE"/ 2>/dev/null || true
-          # Any AppImage/deb produced by flutter_distributor.
-          find dist -type f \( -iname '*.AppImage' -o -iname '*.deb' \) \
-            -exec cp -f {} "$STAGE"/ \; 2>/dev/null || true
-          # Always ship the raw Flutter Linux bundle so the release is never empty.
+          # Brand the Android artifacts: app-arm64-v8a-release.apk -> hnd-viewer-arm64-v8a-release.apk
+          for apk in build/app/outputs/flutter-apk/*.apk; do
+            name="$(basename "$apk")"
+            cp -f "$apk" "$STAGE/hnd-viewer-${name#app-}"
+          done
+          cp -f build/app/outputs/bundle/release/app-release.aab "$STAGE/hnd-viewer-release.aab" 2>/dev/null || true
+          # Linux: ship the whole Flutter bundle as a tarball.
           tar -C build/linux/x64/release \
             --transform 's|^bundle|hnd-viewer-linux-x64|' \
             -czf "$STAGE/hnd-viewer-${GITHUB_REF_NAME}-linux-x64.tar.gz" bundle
           ls -la "$STAGE"
 
       # ---------------------------------------------------------------------
-      # Windows: desktop msix + zip
+      # Windows: desktop folder zip
       # ---------------------------------------------------------------------
       - name: Build Windows desktop app (release)
         if: runner.os == 'Windows'
         shell: pwsh
         run: flutter build windows --release
-
-      - name: Package Windows formats with flutter_distributor (best effort)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          dart pub global activate flutter_distributor 0.6.10
-          # MSIX is signed with the test certificate bundled with the msix
-          # tooling (self-signed). Fine for an initial open release; a
-          # Store-ready MSIX needs a real code-signing certificate later.
-          dart pub global run flutter_distributor package --platform windows --targets msix --skip-clean
-          if ($LASTEXITCODE -ne 0) {
-            Write-Warning "MSIX packaging failed; uploading the raw Release folder zip instead"
-          }
-          dart pub global run flutter_distributor package --platform windows --targets zip --skip-clean
-          if ($LASTEXITCODE -ne 0) {
-            Write-Warning "distributor ZIP failed; uploading the raw Release folder zip instead"
-          }
 
       - name: Stage release files (Windows)
         if: runner.os == 'Windows'
@@ -193,35 +143,16 @@ jobs:
         run: |
           $STAGE = 'release-files'
           New-Item -ItemType Directory -Force -Path $STAGE | Out-Null
-          # Any .msix / .zip produced by flutter_distributor.
-          Get-ChildItem -Path 'dist' -Recurse -File -ErrorAction SilentlyContinue |
-            Copy-Item -Destination $STAGE -ErrorAction SilentlyContinue
-          # Always ship a zip of the raw Flutter Windows build so the release
-          # is never empty.
           $zip = Join-Path $STAGE "hnd-viewer-$env:GITHUB_REF_NAME-windows-x64.zip"
           Compress-Archive -Path 'build\windows\x64\runner\Release\*' -DestinationPath $zip -Force
           Get-ChildItem $STAGE | Select-Object Name, Length
 
       # ---------------------------------------------------------------------
-      # macOS: desktop dmg
+      # macOS: .app zip (unsigned; Apple notarization is out of scope)
       # ---------------------------------------------------------------------
-      - name: Install appdmg (dmg maker dependency)
-        if: runner.os == 'macOS'
-        run: npm install -g appdmg || sudo npm install -g appdmg
-
-      # NOTE: the .app is unsigned and the dmg is therefore not notarized.
-      # Apple notarization (Developer ID + notarytool credentials) is out of
-      # scope for this initial open release; Gatekeeper will warn on install.
       - name: Build macOS app (release)
         if: runner.os == 'macOS'
         run: flutter build macos --release
-
-      - name: Package macOS dmg with flutter_distributor (best effort)
-        if: runner.os == 'macOS'
-        run: |
-          dart pub global activate flutter_distributor 0.6.10
-          dart pub global run flutter_distributor package --platform macos --targets dmg --skip-clean \
-            || echo "::warning::dmg packaging failed; uploading the raw .app zip instead"
 
       - name: Stage release files (macOS)
         if: runner.os == 'macOS'
@@ -229,10 +160,6 @@ jobs:
           set -euxo pipefail
           STAGE="release-files"
           mkdir -p "$STAGE"
-          # Any .dmg produced by flutter_distributor.
-          find dist -type f -iname '*.dmg' -exec cp -f {} "$STAGE"/ \; 2>/dev/null || true
-          # Always ship the raw Flutter .app (ditto preserves the bundle,
-          # symlinks and executable bits) so the release is never empty.
           ditto -c -k --keepParent \
             "build/macos/Build/Products/Release/hnd_viewer.app" \
             "$STAGE/hnd-viewer-${GITHUB_REF_NAME}-macos.app.zip"
@@ -240,8 +167,6 @@ jobs:
 
       # ---------------------------------------------------------------------
       # Attach this OS's staged files to the tag's GitHub Release.
-      # (softprops/action-gh-release creates the release on first use and
-      # appends assets on subsequent ones; each OS job uploads independently.)
       # ---------------------------------------------------------------------
       - name: Attach artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
