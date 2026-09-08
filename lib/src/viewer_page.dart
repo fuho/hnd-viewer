@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:hnd_viewer/protocol.dart';
 import 'package:hnd_viewer/recording.dart';
+import 'package:hnd_viewer/src/sensor_chart.dart';
 
 /// Live viewer: connects to the camera and shows the stream plus gyro roll.
 class ViewerPage extends StatefulWidget {
@@ -35,12 +36,17 @@ class _ViewerPageState extends State<ViewerPage> {
   double _extraRotation = 180;
   bool _autoRotate = true;
   bool _mirror = false;
+  bool _mirrorVertical = false;
   double _brightness = 100;
   double _smoothing = 85;
   double _fps = 0;
 
   bool _showSensorData = false;
   GyroSample? _lastGyro;
+
+  /// Rolling buffer feeding the live strip chart (newest sample appended).
+  static const int _sensorBufferMax = 300;
+  final List<SensorPoint> _sensorBuffer = [];
 
   @override
   void dispose() {
@@ -85,8 +91,13 @@ class _ViewerPageState extends State<ViewerPage> {
   }
 
   void _onGyro(GyroSample s) {
-    _roll.update(rollFromAxes(s.x, s.y, s.z));
+    final double? rawRoll = rollFromAxes(s.x, s.y, s.z);
+    _roll.update(rawRoll);
     _lastGyro = s;
+    _sensorBuffer.add(SensorPoint(x: s.x, y: s.y, z: s.z, roll: rawRoll ?? 0));
+    if (_sensorBuffer.length > _sensorBufferMax) {
+      _sensorBuffer.removeRange(0, _sensorBuffer.length - _sensorBufferMax);
+    }
     if (_recording) {
       _session?.addGyro(s, _recordClock.elapsed);
     }
@@ -234,32 +245,54 @@ class _ViewerPageState extends State<ViewerPage> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final size = math.min(constraints.maxWidth, constraints.maxHeight);
         // Only rotate/flip/brighten the actual video frame. The "No video"
         // placeholder must stay upright, so it is rendered outside the
         // Transform.rotate (the camera image is mounted 180° rotated, hence
         // the default _extraRotation).
         final Widget stage = _frame == null
             ? const Center(child: Text('No video — connect to the camera'))
-            : Transform.rotate(
-                angle: angleRad,
-                child: Transform.flip(
-                  flipX: _mirror,
-                  child: ColorFiltered(
-                    colorFilter: ColorFilter.matrix(brightness),
-                    child: SizedBox(
-                      width: size,
-                      height: size,
-                      child: Image.memory(_frame!,
-                          gaplessPlayback: true, fit: BoxFit.cover),
+            : LayoutBuilder(
+                builder: (context, videoConstraints) {
+                  final double size = math.min(
+                      videoConstraints.maxWidth, videoConstraints.maxHeight);
+                  return Center(
+                    child: Transform.rotate(
+                      angle: angleRad,
+                      child: Transform.flip(
+                        flipX: _mirror,
+                        flipY: _mirrorVertical,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.matrix(brightness),
+                          child: SizedBox(
+                            width: size,
+                            height: size,
+                            child: Image.memory(_frame!,
+                                gaplessPlayback: true, fit: BoxFit.cover),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               );
-        return Container(
-          color: const Color(0xFF05070A),
-          alignment: Alignment.center,
-          child: stage,
+        return Column(
+          children: [
+            // Video area on top; the square video is still sized by
+            // min(width, height) of the space left above the sensor chart.
+            Expanded(
+              child: Container(
+                color: const Color(0xFF05070A),
+                alignment: Alignment.center,
+                child: stage,
+              ),
+            ),
+            if (_showSensorData)
+              SizedBox(
+                width: double.infinity,
+                height: 120,
+                child: SensorChart(points: _sensorBuffer),
+              ),
+          ],
         );
       },
     );
@@ -338,6 +371,12 @@ class _ViewerPageState extends State<ViewerPage> {
             value: _mirror,
             onChanged: (v) => setState(() => _mirror = v),
           ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Mirror vertically', style: TextStyle(fontSize: 13)),
+            value: _mirrorVertical,
+            onChanged: (v) => setState(() => _mirrorVertical = v),
+          ),
           if (_showSensorData && _lastGyro != null) ...[
             const SizedBox(height: 8),
             _sensorReadout(_lastGyro!),
@@ -360,23 +399,75 @@ class _ViewerPageState extends State<ViewerPage> {
     );
   }
 
-  /// Plain monospace readout of the raw sensor sample (bytes 0..19 of the
-  /// gyro datagram). Kept minimal: raw x/y/z, the 12 unknown bytes as hex, and
-  /// the unknown uint16 tail.
+  /// Monospace readout of the raw sensor sample (bytes 0..19 of the gyro
+  /// datagram), laid out as fixed columns so the labels never shift as the
+  /// values change. Lines: x, y, z, roll, mid, tail.
   Widget _sensorReadout(GyroSample gyro) {
+    const TextStyle mono = TextStyle(
+      fontFamily: 'monospace',
+      fontSize: 12,
+      color: Color(0xFF8FE3A5),
+    );
+    // Labels share one fixed column; numeric values share a right-aligned,
+    // fixed-width column.
+    const double labelWidth = 48;
+    const double valueWidth = 72;
+
     final String mid = gyro.mid
         .map((int b) => b.toRadixString(16).padLeft(2, '0'))
         .join(' ');
-    return Text(
-      'x: ${gyro.x}  y: ${gyro.y}  z: ${gyro.z}\n'
-      'mid: $mid\n'
-      'tail: ${gyro.tail}',
-      style: const TextStyle(
-        fontFamily: 'monospace',
-        fontSize: 12,
-        color: Color(0xFF8FE3A5),
-        height: 1.5,
-      ),
+
+    Widget line(String labelText, Widget value) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 3),
+        child: Row(
+          children: [
+            SizedBox(
+              width: labelWidth,
+              child: Text(labelText, style: mono),
+            ),
+            value,
+          ],
+        ),
+      );
+    }
+
+    // x/y/z raw int16 (6 chars covers -32768..32767) and the uint16 tail.
+    Widget intValue(String text) {
+      return SizedBox(
+        width: valueWidth,
+        child: Text(text, style: mono, textAlign: TextAlign.right),
+      );
+    }
+
+    final double angle = _roll.angle ?? 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        line('x', intValue('${gyro.x}'.padLeft(6))),
+        line('y', intValue('${gyro.y}'.padLeft(6))),
+        line('z', intValue('${gyro.z}'.padLeft(6))),
+        line(
+          'roll',
+          Row(
+            children: [
+              intValue(angle.toStringAsFixed(1).padLeft(6)),
+              // Marker goes after the value so the label/value columns never
+              // shift when validity toggles.
+              Text(_roll.valid ? '°' : '° (invalid)', style: mono),
+            ],
+          ),
+        ),
+        // 12 unknown bytes as hex, right-aligned over the remaining width so
+        // the (longer) value never pushes the label.
+        line(
+          'mid',
+          Expanded(
+            child: Text(mid, style: mono, textAlign: TextAlign.right),
+          ),
+        ),
+        line('tail', intValue('${gyro.tail}'.padLeft(5))),
+      ],
     );
   }
 
