@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:gal/gal.dart';
 import 'package:hnd_viewer/protocol.dart';
 
 /// Live viewer: connects to the camera and shows the stream plus gyro roll.
@@ -101,6 +102,24 @@ class _ViewerPageState extends State<ViewerPage> {
     _roll.alpha = 1 - (v / 100) * 0.95;
   }
 
+  Future<void> _saveSnapshot() async {
+    final frame = _frame;
+    if (frame == null) return;
+    final name = 'hnd_${DateTime.now().millisecondsSinceEpoch}';
+    try {
+      await Gal.putImageBytes(frame, name: name);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Snapshot saved: $name')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Snapshot failed: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,9 +192,22 @@ class _ViewerPageState extends State<ViewerPage> {
             ),
           ),
           const SizedBox(height: 12),
-          FilledButton(
-            onPressed: _connected ? _disconnect : _connect,
-            child: Text(_connected ? 'Disconnect' : 'Connect'),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                  onPressed: _connected ? _disconnect : _connect,
+                  child: Text(_connected ? 'Disconnect' : 'Connect'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: FilledButton.tonal(
+                  onPressed: _frame != null ? _saveSnapshot : null,
+                  child: const Text('Snapshot'),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           _slider('Extra rotation', _extraRotation, -180, 360, null, (v) {
