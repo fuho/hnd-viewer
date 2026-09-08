@@ -199,20 +199,30 @@ class _ViewerPageState extends State<ViewerPage> {
     if (session == null) return;
     session.stop();
     try {
-      // Save alongside snapshots in ~/Downloads.
-      final Directory dir = await _downloadsDirectory();
-      final String outPath =
-          '${dir.path}${Platform.pathSeparator}hnd_recording_'
-          '${DateTime.now().millisecondsSinceEpoch}.mp4';
-      final FfmpegMp4Writer writer = FfmpegMp4Writer(outputPath: outPath);
+      final String name =
+          'hnd_recording_${DateTime.now().millisecondsSinceEpoch}.mp4';
+      // Encode to a temp file first (ffmpeg writes there reliably), then copy
+      // into Downloads via Dart so the sandbox resolves the destination the
+      // same way it does for snapshots.
+      final String tmpPath =
+          '${Directory.systemTemp.path}${Platform.pathSeparator}$name';
+      final FfmpegMp4Writer writer = FfmpegMp4Writer(outputPath: tmpPath);
       await writer.start();
       for (final RecordedFrame f in session.frames) {
         await writer.writeFrame(f.jpeg, f.elapsed);
       }
-      final String path = await writer.finish();
+      await writer.finish();
+      final Directory dir = await _downloadsDirectory();
+      final String destPath = '${dir.path}${Platform.pathSeparator}$name';
+      await File(tmpPath).copy(destPath);
+      try {
+        await File(tmpPath).delete();
+      } catch (_) {
+        // Best-effort temp cleanup; the recording is already saved.
+      }
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Recording saved: $path')));
+            .showSnackBar(SnackBar(content: Text('Recording saved: $destPath')));
       }
     } catch (e) {
       if (mounted) {

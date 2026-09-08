@@ -20,10 +20,11 @@ is a free, open, fully offline-capable replacement viewer.
 ## What it does
 
 - Discover / connect to the camera AP (gateway `192.168.1.1`)
-- Live 480×480 video with rotation, mirror, and brightness
-- Gyro roll overlay (the ear camera's orientation)
-- Snapshot to gallery
-- MP4 recording (FFmpeg writer done; UI wiring pending)
+- Live 480×480 video with rotation, horizontal/vertical mirror, brightness, and smoothing
+- Gyro roll overlay with an auto-rotate toggle
+- Live sensor chart (accelerometer x/y/z + roll) with a raw readout
+- Snapshot to ~/Downloads (desktop) or the gallery (mobile)
+- MP4 recording (Record/Stop) saved to ~/Downloads
 
 ## Screenshots / demo
 
@@ -49,15 +50,19 @@ project; it carries no vendor code.
 
 ## Status
 
-In progress.
+v0.1.0 released — streaming, snapshot, recording, and the sensor chart are
+working on macOS, with builds for Android, Windows, and Linux. iOS pending
+signing.
 
 - [x] Standalone repo + 5-platform scaffold (Android/iOS/macOS/Windows/Linux)
 - [x] Pure-Dart protocol core (discovery + video reassembly + gyro/roll),
-      unit-tested — 27 tests, including a loopback UDP integration test
+      unit-tested — 27 tests
 - [x] Live-view UI (video + gyro roll + rotation/mirror/brightness/smoothing)
-- [x] Snapshot to gallery
-- [ ] MP4 recording (FFmpeg writer done; UI Record button pending)
-- [ ] Packaging / installers for all five targets
+- [x] Auto-rotate toggle + live sensor chart (x/y/z + roll)
+- [x] Snapshot to ~/Downloads (desktop) / gallery (mobile)
+- [x] MP4 recording to ~/Downloads (Record/Stop)
+- [x] Automated GitHub Actions releases (Android/Windows/macOS/Linux)
+- [ ] iOS build + macOS code signing/notarization
 
 ## Running the macOS build
 
