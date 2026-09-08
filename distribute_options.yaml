@@ -1,0 +1,53 @@
+# flutter_distributor configuration for hnd-viewer.
+#
+# Note: flutter_distributor was renamed to "fastforge" upstream; both read this
+# same file (docs: https://fastforge.dev/distribute-options). The legacy CLI is
+# still published and is what the release workflow activates:
+#   dart pub global activate flutter_distributor
+#
+# The .github/workflows/release.yml invokes `flutter_distributor package
+# --platform ... --targets ...` directly per format so each format can fail
+# independently and fall back to the raw `flutter build` output. The `releases`
+# below mirror exactly those jobs for humans who prefer:
+#   flutter_distributor release --name linux
+#   flutter_distributor release --name windows
+#   flutter_distributor release --name macos
+#
+# Per-format maker settings live in make_config.yaml files that
+# flutter_distributor reads from <platform>/packaging/<target>/make_config.yaml:
+#   - linux/packaging/appimage/make_config.yaml
+#   - linux/packaging/deb/make_config.yaml
+#   - macos/packaging/dmg/make_config.yaml
+#   - windows/packaging/msix/make_config.yaml
+# (the `zip` maker has no required config file).
+output: dist/
+
+releases:
+  - name: linux
+    jobs:
+      - name: linux-appimage
+        package:
+          platform: linux
+          target: appimage
+      - name: linux-deb
+        package:
+          platform: linux
+          target: deb
+
+  - name: windows
+    jobs:
+      - name: windows-msix
+        package:
+          platform: windows
+          target: msix
+      - name: windows-zip
+        package:
+          platform: windows
+          target: zip
+
+  - name: macos
+    jobs:
+      - name: macos-dmg
+        package:
+          platform: macos
+          target: dmg

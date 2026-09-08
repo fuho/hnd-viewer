@@ -1,0 +1,18 @@
+# flutter_distributor Windows MSIX maker settings.
+# Location is fixed by flutter_distributor: windows/packaging/msix/make_config.yaml
+# (see https://fastforge.dev/makers/msix).
+#
+# Signing: no certificate is configured here, so the msix tooling signs with
+# the self-signed test certificate it ships (test_certificate.pfx) — fine for
+# an initial open release and requires no secrets. A Microsoft Store release
+# later needs a real code-signing certificate (see also
+# https://github.com/YehudaKremer/msix).
+display_name: hnd-viewer
+
+# Four-part MSIX package version; keep in sync with pubspec.yaml `version:`
+# when bumping (0.1.0 -> 0.1.0.0).
+msix_version: 0.1.0.0
+
+# windows-latest runners are x64; omit `architecture` to auto-detect from the
+# build output directory instead.
+# architecture: x64

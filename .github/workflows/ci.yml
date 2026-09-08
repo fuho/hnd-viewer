@@ -1,0 +1,46 @@
+name: CI
+
+# Run on every push to any branch and on every pull request.
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+# Cancel any in-flight CI run for the same ref so a newer push replaces it.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    name: Analyze & test (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # test/ffmpeg_mp4_writer_test.dart shells out to real ffmpeg/ffprobe and
+      # skips gracefully when they are missing. Install them so those writer
+      # tests actually exercise the code in CI.
+      - name: Install ffmpeg / ffprobe
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      # CI always uses its own Flutter (stable), never the SDK vendored at
+      # .flutter/ for local development.
+      - name: Set up Flutter (stable)
+        uses: subosito/flutter-action@v3
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test

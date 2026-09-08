@@ -58,3 +58,7 @@ app.*.map.json
 # Workspace-local Android SDK overlay (symlinks to the real SDK + android-36).
 .android-sdk/
 .sdk-dl/
+
+# Packaging output (flutter_distributor) and CI release staging.
+/dist/
+/release-files/

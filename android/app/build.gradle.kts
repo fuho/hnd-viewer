@@ -46,8 +46,14 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Signing with the committed android/debug.keystore (the well-known
+            // public "androiddebugkey" credential, not a secret) for now. This
+            // is fine for an initial open release: CI (see
+            // .github/workflows/release.yml) builds signed artifacts with no
+            // secrets configured because the keystore ships in the repo.
+            // TODO: For a production release, add a real keystore (e.g. from
+            // the ANDROID_KEYSTORE_* GitHub secrets) and a release signingConfig
+            // that reads it, then point this buildType at that config.
             signingConfig = signingConfigs.getByName("debug")
         }
     }

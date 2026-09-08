@@ -1,0 +1,38 @@
+# flutter_distributor Debian (.deb) maker settings.
+# Location is fixed by flutter_distributor: linux/packaging/deb/make_config.yaml
+# (see https://fastforge.dev/makers/deb).
+#
+# The Debian package is named hnd-viewer while the installed binary/desktop
+# entry stays hnd_viewer (from linux/CMakeLists.txt BINARY_NAME), matching the
+# Android application id com.hndviewer.hnd_viewer / pubspec name hnd_viewer.
+#
+# TODO(icon): reuses the default template icon from the macOS scaffold;
+# replace with a real app icon when one exists.
+display_name: hnd-viewer
+
+# Debian package name: lowercase alphanumerics plus '-'/'+'/'.' only.
+package_name: hnd-viewer
+
+maintainer:
+  name: hnd-viewer maintainers
+  email: noreply@users.noreply.github.com
+
+priority: optional
+section: video
+installed_size: 40000
+essential: false
+
+icon: macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png
+
+keywords:
+  - camera
+  - viewer
+  - otoscope
+  - ear
+
+generic_name: HND Ear Camera Viewer
+
+categories:
+  - AudioVideo
+
+startup_notify: true
