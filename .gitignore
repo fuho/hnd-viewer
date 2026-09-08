@@ -44,3 +44,10 @@ app.*.map.json
 **/ios/.symlinks/
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
+
+# Vendored Flutter SDK (toolchain only — not part of the app source)
+.flutter/
+
+# Flutter's per-user state (config + pub cache) redirected here to stay inside
+# the workspace sandbox.
+.flutter-user/
