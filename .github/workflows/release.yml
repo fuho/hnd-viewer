@@ -161,7 +161,7 @@ jobs:
           STAGE="release-files"
           mkdir -p "$STAGE"
           ditto -c -k --keepParent \
-            "build/macos/Build/Products/Release/hnd_viewer.app" \
+            "build/macos/Build/Products/Release/hnd-viewer.app" \
             "$STAGE/hnd-viewer-${GITHUB_REF_NAME}-macos.app.zip"
           ls -la "$STAGE"
 

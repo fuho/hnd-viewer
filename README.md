@@ -50,7 +50,7 @@ project; it carries no vendor code.
 
 ## Status
 
-v0.1.0 released — streaming, snapshot, recording, and the sensor chart are
+v1.0.0 released — streaming, snapshot, recording, and the sensor chart are
 working on macOS, with builds for Android, Windows, and Linux. iOS pending
 signing.
 

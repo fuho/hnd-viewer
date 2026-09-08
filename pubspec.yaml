@@ -1,7 +1,7 @@
 name: hnd_viewer
 description: "Free, open, offline viewer for the HND-NE3 ear camera: live video + gyro over raw UDP on Android, iOS, macOS, Windows and Linux."
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.13.2
