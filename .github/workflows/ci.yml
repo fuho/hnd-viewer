@@ -31,7 +31,7 @@ jobs:
       # CI always uses its own Flutter (stable), never the SDK vendored at
       # .flutter/ for local development.
       - name: Set up Flutter (stable)
-        uses: subosito/flutter-action@v3
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
