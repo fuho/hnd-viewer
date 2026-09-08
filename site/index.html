@@ -3,11 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>hnd-viewer · HND-NE3 ear camera viewer</title>
-  <meta name="description" content="hnd-viewer is a free, open viewer for the HND-NE3 ear camera: live 480×480 video and gyro orientation over raw UDP, with no vendor app and no cloud.">
+  <title>hnd-viewer — free, open viewer for the HND-NE3 / NATFIRE NE3 ear camera</title>
+  <meta name="description" content="Free, open, offline viewer for the HND-NE3-D / NATFIRE NE3 wireless ear camera. Live 480×480 video + gyro over raw UDP on macOS, Windows, Linux, Android and iOS. No app, no cloud, no tracking.">
+  <link rel="canonical" href="https://txt.fuho.org/hnd-viewer/">
   <meta name="theme-color" content="#fafafa">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="hnd-viewer">
+  <meta property="og:title" content="hnd-viewer — free, open viewer for the HND-NE3 / NATFIRE NE3 ear camera">
+  <meta property="og:description" content="Free, open, offline viewer for the HND-NE3-D / NATFIRE NE3 wireless ear camera. No app, no cloud, no tracking.">
+  <meta property="og:url" content="https://txt.fuho.org/hnd-viewer/">
+  <meta property="og:image" content="https://txt.fuho.org/hnd-viewer/media/screenshots/live-view-1.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="hnd-viewer — free, open viewer for the HND-NE3 / NATFIRE NE3 ear camera">
+  <meta name="twitter:description" content="Free, open, offline viewer for the HND-NE3-D / NATFIRE NE3 wireless ear camera. No app, no cloud, no tracking.">
+  <meta name="twitter:image" content="https://txt.fuho.org/hnd-viewer/media/screenshots/live-view-1.png">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "hnd-viewer",
+    "description": "Free, open, offline viewer for the HND-NE3-D / NATFIRE NE3 wireless ear camera. Live 480x480 video and gyro over raw UDP.",
+    "url": "https://txt.fuho.org/hnd-viewer/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "macOS, Windows, Linux, Android, iOS",
+    "license": "https://opensource.org/licenses/MIT",
+    "offers": { "@type": "Offer", "price": "0" }
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -33,11 +57,19 @@
     <section class="hero" id="top">
       <div class="container">
         <h1 class="hero-title">hnd-viewer</h1>
-        <p class="hero-sub">A free, open viewer for the HND-NE3 ear camera.</p>
+        <p class="hero-sub">A free, open viewer for the HND-NE3 / NATFIRE NE3 wireless ear camera.</p>
         <p class="hero-actions">
           <a class="btn" href="https://github.com/fuho/hnd-viewer/releases/latest">Download</a>
           <a class="text-link" href="https://github.com/fuho/hnd-viewer">View on GitHub</a>
         </p>
+      </div>
+    </section>
+
+    <!-- ============================== Why ============================== -->
+    <section class="section" id="why">
+      <div class="container">
+        <h2>Why</h2>
+        <p class="lede">The HND-NE3-D (also sold as the <strong>NATFIRE NE3</strong> and other white-label names) ships with an Android-only, Chinese-language app and no public documentation. It exposes no HTTP interface — raw UDP only — so browsers can't reach it, leaving you locked into the vendor app and its cloud. hnd-viewer talks to the camera directly: no vendor app, no account, no cloud, and <strong>no tracking</strong> — on Android, iOS, macOS, Windows, and Linux.</p>
       </div>
     </section>
 
@@ -48,12 +80,12 @@
         <p class="lede">A factory-sealed HND-NE3 camera boots its own Wi-Fi access point and streams a roughly 12 fps 480×480 JPEG image plus sensor data. hnd-viewer renders it with a gyro roll overlay.</p>
 
         <figure class="shot">
-          <img src="media/screenshots/live-view-1.png" alt="hnd-viewer live camera view" loading="lazy">
+          <img src="media/screenshots/live-view-1.png" alt="hnd-viewer showing live 480×480 video from the HND-NE3 / NATFIRE NE3 wireless ear camera" loading="lazy">
           <figcaption>Live camera view with the gyro roll overlay.</figcaption>
         </figure>
 
         <figure class="shot">
-          <img src="media/screenshots/live-view-2.png" alt="hnd-viewer viewer window" loading="lazy">
+          <img src="media/screenshots/live-view-2.png" alt="hnd-viewer window with gyro roll and live sensor chart for the HND-NE3 ear camera" loading="lazy">
           <figcaption>The viewer window and controls.</figcaption>
         </figure>
 

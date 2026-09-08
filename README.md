@@ -12,10 +12,15 @@ One Flutter codebase targeting **Android, iOS, macOS, Windows, and Linux**.
 
 ## Why
 
-The factory unit boots its own Wi-Fi AP (`HNDEC_55-xxxxxx`) and streams a
-480×480 JPEG video (~12 fps) plus 3-axis accelerometer data over raw UDP
-sockets. The vendor app is Android-only and Chinese-language. This project
-is a free, open, fully offline-capable replacement viewer.
+The HND-NE3-D is a white-label ear camera (also sold as the **NATFIRE NE3**
+and other names) that ships with an **Android-only, Chinese-language** vendor
+app and no public protocol documentation. The camera exposes **no HTTP
+interface** — it speaks raw UDP only — so browsers can't reach it, leaving you
+locked into the vendor app, its cloud, and its telemetry.
+
+hnd-viewer is a free, open, fully-offline viewer that talks to the camera
+directly — no vendor app, no account, no cloud, **no tracking** — on Android,
+iOS, macOS, Windows, and Linux.
 
 ## What it does
 

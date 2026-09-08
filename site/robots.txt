@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://txt.fuho.org/hnd-viewer/sitemap.xml
