@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:hnd_viewer/protocol.dart';
+import 'package:hnd_viewer/recording.dart';
 
 /// Live viewer: connects to the camera and shows the stream plus gyro roll.
 class ViewerPage extends StatefulWidget {
@@ -23,14 +24,22 @@ class _ViewerPageState extends State<ViewerPage> {
   final RollFilter _roll = RollFilter();
   final List<DateTime> _frameTimes = [];
 
+  RecordingSession? _session;
+  final Stopwatch _recordClock = Stopwatch();
+  bool _recording = false;
+
   bool _connected = false;
   String _status = 'Disconnected';
 
   double _extraRotation = 180;
+  bool _autoRotate = true;
   bool _mirror = false;
   double _brightness = 100;
   double _smoothing = 85;
   double _fps = 0;
+
+  bool _showSensorData = false;
+  GyroSample? _lastGyro;
 
   @override
   void dispose() {
@@ -63,6 +72,11 @@ class _ViewerPageState extends State<ViewerPage> {
     _frameTimes.add(now);
     _frameTimes
         .removeWhere((t) => now.difference(t) > const Duration(seconds: 5));
+    // Record the raw JPEG bytes as-is; rotation/flip/brightness are view
+    // transforms applied only when rendering.
+    if (_recording) {
+      _session?.addFrame(bytes, _recordClock.elapsed);
+    }
     setState(() {
       _frame = bytes;
       _fps = _frameTimes.length / 5.0;
@@ -71,6 +85,10 @@ class _ViewerPageState extends State<ViewerPage> {
 
   void _onGyro(GyroSample s) {
     _roll.update(rollFromAxes(s.x, s.y, s.z));
+    _lastGyro = s;
+    if (_recording) {
+      _session?.addGyro(s, _recordClock.elapsed);
+    }
     setState(() {});
   }
 
@@ -120,6 +138,45 @@ class _ViewerPageState extends State<ViewerPage> {
     }
   }
 
+  Future<void> _toggleRecording() async {
+    if (!_recording) {
+      // Start a fresh session; frames arriving right after this are captured
+      // with the stopwatch clock relative to the recording start.
+      final session = RecordingSession();
+      _recordClock..reset()..start();
+      session.start(Duration.zero);
+      setState(() {
+        _session = session;
+        _recording = true;
+      });
+      return;
+    }
+
+    // Stop: freeze the session, then encode the buffered frames to MP4.
+    final session = _session;
+    setState(() => _recording = false);
+    _recordClock.stop();
+    if (session == null) return;
+    session.stop();
+    final writer = FfmpegMp4Writer();
+    try {
+      await writer.start();
+      for (final RecordedFrame f in session.frames) {
+        await writer.writeFrame(f.jpeg, f.elapsed);
+      }
+      final String path = await writer.finish();
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Recording saved: $path')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Recording failed: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,8 +190,11 @@ class _ViewerPageState extends State<ViewerPage> {
   }
 
   Widget _buildStage() {
-    final roll = _roll.valid ? (_roll.angle ?? 0) : 0;
-    final angleRad = (_extraRotation + roll) * math.pi / 180;
+    // With auto-rotate off the stream keeps its manual (_extraRotation)
+    // orientation and ignores the gyro roll entirely.
+    final double roll =
+        _autoRotate && _roll.valid ? (_roll.angle ?? 0) : 0;
+    final double angleRad = (_extraRotation + roll) * math.pi / 180;
     final b = _brightness / 100;
     final brightness = <double>[
       b, 0, 0, 0, 0, //
@@ -212,6 +272,13 @@ class _ViewerPageState extends State<ViewerPage> {
                   child: const Text('Snapshot'),
                 ),
               ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: FilledButton.tonal(
+                  onPressed: _frame != null ? _toggleRecording : null,
+                  child: Text(_recording ? 'Stop recording' : 'Record'),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -226,10 +293,26 @@ class _ViewerPageState extends State<ViewerPage> {
           }, '${_smoothing.round()}%'),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
+            title: const Text('Auto-rotate', style: TextStyle(fontSize: 13)),
+            value: _autoRotate,
+            onChanged: (v) => setState(() => _autoRotate = v),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Show sensor data', style: TextStyle(fontSize: 13)),
+            value: _showSensorData,
+            onChanged: (v) => setState(() => _showSensorData = v),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
             title: const Text('Mirror horizontally', style: TextStyle(fontSize: 13)),
             value: _mirror,
             onChanged: (v) => setState(() => _mirror = v),
           ),
+          if (_showSensorData && _lastGyro != null) ...[
+            const SizedBox(height: 8),
+            _sensorReadout(_lastGyro!),
+          ],
           const Divider(height: 24),
           Text(
             'roll: ${roll.toStringAsFixed(1)}° '
@@ -244,6 +327,26 @@ class _ViewerPageState extends State<ViewerPage> {
           ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Plain monospace readout of the raw sensor sample (bytes 0..19 of the
+  /// gyro datagram). Kept minimal: raw x/y/z, the 12 unknown bytes as hex, and
+  /// the unknown uint16 tail.
+  Widget _sensorReadout(GyroSample gyro) {
+    final String mid = gyro.mid
+        .map((int b) => b.toRadixString(16).padLeft(2, '0'))
+        .join(' ');
+    return Text(
+      'x: ${gyro.x}  y: ${gyro.y}  z: ${gyro.z}\n'
+      'mid: $mid\n'
+      'tail: ${gyro.tail}',
+      style: const TextStyle(
+        fontFamily: 'monospace',
+        fontSize: 12,
+        color: Color(0xFF8FE3A5),
+        height: 1.5,
       ),
     );
   }

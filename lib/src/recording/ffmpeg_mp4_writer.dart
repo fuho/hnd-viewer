@@ -201,6 +201,20 @@ class FfmpegMp4Writer implements RecordingWriter {
     }
     final String? found = await findExecutableOnPath('ffmpeg');
     if (found != null) return found;
+    // macOS GUI apps launched via Finder/`open` do not inherit the shell
+    // PATH, so a Homebrew-installed ffmpeg is invisible to PATH resolution.
+    // Probe the standard Homebrew prefixes directly before giving up.
+    if (Platform.isMacOS) {
+      for (final String candidate in const <String>[
+        '/opt/homebrew/bin/ffmpeg',
+        '/usr/local/bin/ffmpeg',
+      ]) {
+        final File file = File(candidate);
+        if (await file.exists()) {
+          return file.absolute.path;
+        }
+      }
+    }
     throw FileSystemException(
         'FfmpegMp4Writer: "ffmpeg" was not found on PATH; install ffmpeg or '
         'pass the binary location via the ffmpegPath constructor argument');
