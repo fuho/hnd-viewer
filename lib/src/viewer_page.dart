@@ -33,7 +33,7 @@ class _ViewerPageState extends State<ViewerPage> {
   bool _connected = false;
   String _status = 'Disconnected';
 
-  double _extraRotation = 180;
+  double _extraRotation = 90;
   bool _autoRotate = true;
   bool _mirror = false;
   bool _mirrorVertical = false;
@@ -247,7 +247,7 @@ class _ViewerPageState extends State<ViewerPage> {
       builder: (context, constraints) {
         // Only rotate/flip/brighten the actual video frame. The "No video"
         // placeholder must stay upright, so it is rendered outside the
-        // Transform.rotate (the camera image is mounted 180° rotated, hence
+        // Transform.rotate (the camera image is mounted 90° rotated, hence
         // the default _extraRotation).
         final Widget stage = _frame == null
             ? const Center(child: Text('No video — connect to the camera'))
