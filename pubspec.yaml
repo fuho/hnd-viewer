@@ -1,5 +1,5 @@
 name: hnd_viewer
-description: "A new Flutter project."
+description: "Free, open, offline viewer for the HND-NE3 ear camera: live video + gyro over raw UDP on Android, iOS, macOS, Windows and Linux."
 publish_to: 'none'
 version: 0.1.0+1
 

@@ -1,6 +1,6 @@
 # hnd-viewer
 
-Cross-platform viewer for the **HND-NE3-D ear camera** (Beken BK7252N).
+Cross-platform viewer for the **HND-NE3-D ear camera** (Beken BK7231).
 It connects to a factory-sealed unit's Wi-Fi AP and shows the live video
 stream plus gyro orientation — no vendor (Chinese, Android-only) companion
 app required.
