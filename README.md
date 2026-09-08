@@ -22,6 +22,8 @@ hnd-viewer is a free, open, fully-offline viewer that talks to the camera
 directly — no vendor app, no account, no cloud, **no tracking** — on Android,
 iOS, macOS, Windows, and Linux.
 
+![The HND-NE3 / NATFIRE NE3 ear camera](media/hnd-ne3-camera.jpg)
+
 ## What it does
 
 - Discover / connect to the camera AP (gateway `192.168.1.1`)
