@@ -10,8 +10,9 @@ the firmware repo is untouched apart from one `.gitignore` line pointing at
 
 The app **connects to a factory-sealed camera and shows live video + gyro**.
 Android builds and runs on-device; the protocol core is fully validated
-against a real unit. Remaining: MP4 recording (FFmpeg), packaging, iOS/macOS
-(a full Xcode install), and end-to-end testing of the *app* on the Pixel.
+against a real unit; the FFmpeg MP4 writer is done and tested. Remaining:
+Record UI wiring, packaging, iOS/macOS (a full Xcode install), and end-to-end
+testing of the *app* on the Pixel.
 
 ## What this is
 
@@ -46,6 +47,11 @@ from `atan2(y,z)`.
 - **M4** snapshot to photo gallery via `gal` (Snapshot button).
 - **M5 core** `RecordingSession` (frames + gyro with elapsed timestamps, fps)
   + `RecordingWriter` interface + a portable `JpegSequenceWriter` fallback.
+- **M5 finish** `FfmpegMp4Writer` — spawns system `ffmpeg` to transcode buffered
+  JPEG frames into an H.264 `+faststart` MP4; container duration tracks the
+  final frame's elapsed time; robust cleanup (no orphan processes, no partial
+  file). 4 tests (real ffmpeg/ffprobe round-trip), skipped gracefully when
+  ffmpeg is absent. Suite is now 27 tests.
 - **Android build** works: `flutter build apk --debug`; APK installs and
   launches on a **Pixel 9 (Android 17)** with no crashes.
 - **Live validation** (this session): `tool/live_probe.dart` against the
@@ -96,9 +102,9 @@ machine with the full SDK.
 
 ## Remaining
 
-1. **M5 (finish): FFmpeg MP4 writer** — implement `RecordingWriter` (encode
-   JPEG frames → H.264 → MP4). `ffmpeg` is on this Mac; pick a Flutter FFmpeg
-   plugin (or platform encoders) and wire it behind the existing interface.
+1. **Record UI wiring** — add Record/Stop to `ViewerPage` driving
+   `RecordingSession` + `FfmpegMp4Writer`. The writer is done and tested; only
+   the UI hook-up (and an on-device/desktop end-to-end smoke path) remains.
 2. **M6 packaging** — release builds + signing + installers for all five
    targets.
 3. **iOS/macOS** — need a full Xcode install (`xcode-select` currently points
@@ -113,7 +119,8 @@ machine with the full SDK.
 ## Key files
 
 - `lib/protocol.dart` + `lib/src/protocol/` — protocol core (no UI).
-- `lib/recording.dart` + `lib/src/recording/` — recording session/writer.
+- `lib/recording.dart` + `lib/src/recording/` — recording session/writers
+  (incl. `ffmpeg_mp4_writer.dart`).
 - `lib/src/viewer_page.dart` — the app UI.
 - `tool/live_probe.dart` — headless live-camera test.
 - `test/` — unit + integration tests.

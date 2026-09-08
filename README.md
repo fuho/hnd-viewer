@@ -20,7 +20,7 @@ is a free, open, fully offline-capable replacement viewer.
 - Live 480×480 video with rotation, mirror, and brightness
 - Gyro roll overlay (the ear camera's orientation)
 - Snapshot to gallery
-- MP4 recording (planned)
+- MP4 recording (FFmpeg writer done; UI wiring pending)
 
 ## The protocol
 
@@ -38,8 +38,8 @@ In progress.
 - [x] Pure-Dart protocol core (discovery + video reassembly + gyro/roll),
       unit-tested — 16 tests, including a loopback UDP integration test
 - [x] Live-view UI (video + gyro roll + rotation/mirror/brightness/smoothing)
-- [ ] Snapshot to gallery
-- [ ] MP4 recording
+- [x] Snapshot to gallery
+- [ ] MP4 recording (FFmpeg writer done; UI Record button pending)
 - [ ] Packaging / installers for all five targets
 
 ## Development
