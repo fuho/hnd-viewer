@@ -198,8 +198,13 @@ class _ViewerPageState extends State<ViewerPage> {
     _recordClock.stop();
     if (session == null) return;
     session.stop();
-    final writer = FfmpegMp4Writer();
     try {
+      // Save alongside snapshots in ~/Downloads.
+      final Directory dir = await _downloadsDirectory();
+      final String outPath =
+          '${dir.path}${Platform.pathSeparator}hnd_recording_'
+          '${DateTime.now().millisecondsSinceEpoch}.mp4';
+      final FfmpegMp4Writer writer = FfmpegMp4Writer(outputPath: outPath);
       await writer.start();
       for (final RecordedFrame f in session.frames) {
         await writer.writeFrame(f.jpeg, f.elapsed);
